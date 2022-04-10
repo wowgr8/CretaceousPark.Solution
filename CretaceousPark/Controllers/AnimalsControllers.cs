@@ -87,6 +87,26 @@ namespace CretaceousPark.Controllers
       }
     }
 
+    // DELETE: api/Animals/5
+
+    // new [HttpDelete] annotation takes an id as a URL parameter just like our equivalent GET and PUT methods. Entity doesn't care whether it gets information from an API or a web application when manipulating the database.
+    // Remember that forms in HTML5 don't allow for PUT, PATCH or DELETE verbs. For that reason, we had to use HttpPost along with an ActionName like this: [HttpPost, ActionName("Delete")]. However, we aren't using HTML anymore and there are no such limitations with an API
+    // For that reason, we can use HttpPut and HttpDelete.
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteAnimal(int id)
+    {
+      var animal = await _db.Animals.FindAsync(id);
+      if (animal == null)
+      {
+        return NotFound();
+      }
+
+      _db.Animals.Remove(animal);
+      await _db.SaveChangesAsync();
+
+      return NoContent();
+    }
+
     // created a private method, AnimalExists, for use within the controller, to DRY up our code.
     private bool AnimalExists(int id)
     {
