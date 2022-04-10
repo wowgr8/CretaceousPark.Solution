@@ -33,7 +33,24 @@ namespace CretaceousPark.Controllers
       await _db.SaveChangesAsync();
 
       // POST route utilizes the function CreatedAtAction. This is so that it can end up returning the Animal object to the user, as well as update the status code to 201, for "Created", rather than the default 200 OK.
-      return CreatedAtAction("Post", new { id = animal.AnimalId }, animal);
+      // updated to return the result of our Get GetAnimal route. Upon creation, the result contains a link to where that newly-created object can be found with a GET get animal request
+      return CreatedAtAction(nameof(GetAnimal), new { id = animal.AnimalId }, animal);
+    }
+
+    // GET: api/Animals/5
+    // THis will get a specific animal's information from the API.
+    // HttpGet accepts an argument here. We include {id} in the data annotation, and restart the server.
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Animal>> GetAnimal(int id)
+    {
+      var animal = await _db.Animals.FindAsync(id);
+
+      if (animal == null)
+      {
+        return NotFound();
+      }
+
+      return animal;
     }
   }
 }
