@@ -44,7 +44,8 @@ namespace CretaceousPark
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CretaceousPark v1"));
             }
 
-            app.UseHttpsRedirection();
+            // This method causes our server to reroute all traffic to the HTTPS port on our server. This increases application security but it can cause our browser to prevent access to the site and will slow us down when we're developing our project so it's commented out for now.
+            // app.UseHttpsRedirection();
 
             app.UseRouting();
 
