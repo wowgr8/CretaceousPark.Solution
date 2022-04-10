@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CretaceousPark.Models;
+// allows use of EntityState
+using Microsoft.EntityFrameworkCore
 
 namespace CretaceousPark.Controllers
 {
@@ -51,6 +53,44 @@ namespace CretaceousPark.Controllers
       }
 
       return animal;
+    }
+
+    // PUT: api/Animals/5
+    // PUT is like POST in that it makes a change to the server. However, PUT changes existing information while POST creates new information. 
+
+    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    // [HttpPut] annotation specifies that we'll determine which animal will be updated based on the id parameter in the URL.
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Put(int id, Animal animal)
+    {
+      if (id != animal.AnimalId)
+      {
+        return BadRequest();
+      }
+
+      _db.Entry(animal).State = EntityState.Modified;
+
+      try
+      {
+        await _db.SaveChangesAsync();
+      }
+      catch (DbUpdateConcurrencyException)
+      {
+        if (!AnimalExists(id))
+        {
+          return NotFound();
+        }
+        else
+        {
+          throw;
+        }
+      }
+    }
+
+    // created a private method, AnimalExists, for use within the controller, to DRY up our code.
+    private bool AnimalExists(int id)
+    {
+      return _db.Animals.Any(e => e.AnimalId == id);
     }
   }
 }
